@@ -1,0 +1,2 @@
+C:\Users\P\Documents\Visual Studio 2015\Projects\Solution1\Shadow\bin\Debug\Shadow.exe.config
+C:\Users\P\Documents\Visual Studio 2015\Projects\Solution1\Shadow\obj\Debug\PM Rotations.csprojResolveAssemblyReference.cache
