@@ -366,7 +366,7 @@ namespace PixelMagic.Rotation
             labelTalentsLink.LinkClicked += labelTalentsLink_LinkClicked;
             SettingsForm.Controls.Add(labelTalentsLink);
             var labelDonationLink = new LinkLabel { Text = "Appreciated but NOT necessary: Donate via Bitcoin", Size = new Size(300, 20), Left = 8, Top = 350 };
-            labelDonationLink.Links.Add(31, 18, "https://github.com/TWonderchild/TW-Pixelmagic-CRs/");
+            labelDonationLink.Links.Add(31, 18, "https://github.com/TWonderchild/TWonderchild.github.io");
             labelDonationLink.LinkClicked += labelDonationLink_LinkClicked;
             SettingsForm.Controls.Add(labelDonationLink);
         }
@@ -385,7 +385,16 @@ namespace PixelMagic.Rotation
         }
         private void txtPIWait_TextChanged(object sender, EventArgs e)
         {
-            txtPIWait = int.Parse(PIWaitText.Text);
+            int userInput;
+            if (int.TryParse(PIWaitText.Text, out userInput) && userInput >= 0)
+            {
+                txtPIWait = userInput;
+            }
+            else
+            {
+                PIWaitText.Text = "";
+                Log.Write("Invalid value! Check Shadow Word:Death settings!", Color.Red);
+            }
         }
         private void chkSFPI_Click(object sender, EventArgs e)
         {
@@ -397,7 +406,16 @@ namespace PixelMagic.Rotation
         }
         private void txtSFWait_TextChanged(object sender, EventArgs e)
         {
-            txtSFWait = int.Parse(SFWaitText.Text);
+            int userInput;
+            if (int.TryParse(SFWaitText.Text, out userInput) && userInput >= 0)
+            {
+                txtSFWait = userInput;
+            }
+            else
+            {
+                SFWaitText.Text = "";
+                Log.Write("Invalid value! Check Shadow Word:Death settings!", Color.Red);
+            }
         }
         private void chkVoidTorrent_Click(object sender, EventArgs e)
         {
@@ -405,15 +423,42 @@ namespace PixelMagic.Rotation
         }
         private void txtSWD_TextChanged(object sender, EventArgs e)
         {
-            txtSWD = int.Parse(SWDText.Text);
+            int userInput;
+            if (int.TryParse(SWDText.Text, out userInput) && userInput >= 0 && userInput <= 100)
+            {
+                txtSWD = userInput;
+            }
+            else
+            {
+                SWDText.Text = "";
+                Log.Write("Invalid value! Check Shadow Word:Death settings!", Color.Red);
+            }
         }
         private void txtPWS_TextChanged(object sender, EventArgs e)
         {
-            txtPWS = int.Parse(PWSText.Text);
+            int userInput;
+            if (int.TryParse(PWSText.Text, out userInput) && userInput >= 0 && userInput <= 100)
+            {
+                txtPWS = userInput;
+            }
+            else
+            {
+                PWSText.Text = "";
+                Log.Write("Invalid value! Check Power Word:Shield settings!", Color.Red);
+            }
         }
         private void txtVE_TextChanged(object sender, EventArgs e)
         {
-            txtVE = int.Parse(VEText.Text);
+            int userInput;
+            if (int.TryParse(VEText.Text, out userInput) && userInput >= 0 && userInput <= 100)
+            {
+                txtVE = userInput;
+            }
+            else
+            {
+                VEText.Text = "";
+                Log.Write("Invalid value! Check Vampiric Embrace settings!", Color.Red);
+            }
         }
         private void chkSilence_Click(object sender, EventArgs e)
         {
@@ -463,9 +508,9 @@ namespace PixelMagic.Rotation
             if (combatRoutine.Type != RotationType.SingleTarget && combatRoutine.Type != RotationType.AOE) return;
             if (!WoW.HasTarget || !WoW.TargetIsEnemy) return;
 
-            if (WoW.HealthPercent < int.Parse(PWSText.Text) && !WoW.PlayerHasBuff(POWER_WORD_SHIELD) && !WoW.IsSpellOnCooldown(POWER_WORD_SHIELD))
+            if (WoW.HealthPercent < txtPWS && !WoW.PlayerHasBuff(POWER_WORD_SHIELD) && !WoW.IsSpellOnCooldown(POWER_WORD_SHIELD))
             {
-                Log.Write("Health below " + PWSText.Text + "% - Using PWS now", Color.Red);
+                Log.Write("Health below " + txtPWS + "% - Using PWS now", Color.Red);
                 SpellCast(POWER_WORD_SHIELD);
                 return;
             }
@@ -506,7 +551,7 @@ namespace PixelMagic.Rotation
 
             if(WoW.PlayerSpellCharges(SHADOW_WORD_DEATH) == 2 && (WoW.Insanity <= 80 || (WoW.IsSpellOnCooldown(MIND_BLAST) && WoW.IsSpellOnCooldown(VOID_BOLT))) && WoW.TargetHealthPercent <= 20 && DotsUp())
                 SpellCast(SHADOW_WORD_DEATH);
-            if (WoW.PlayerSpellCharges(SHADOW_WORD_DEATH) == 1 && WoW.Insanity <= int.Parse(SWDText.Text) && WoW.TargetHealthPercent <= 20 && DotsUp())
+            if (WoW.PlayerSpellCharges(SHADOW_WORD_DEATH) == 1 && WoW.Insanity <= txtSWD && WoW.TargetHealthPercent <= 20 && DotsUp())
                 SpellCast(SHADOW_WORD_DEATH);
 
             if ((!WoW.TargetHasDebuff(VAMPIRIC_TOUCH) || WoW.TargetDebuffTimeRemaining(VAMPIRIC_TOUCH) <= 4) && !MoveCheck() && WoW.LastSpell!= VAMPIRIC_TOUCH && !WoW.PlayerHasBuff(T19_VOID)) //Messy workaround to fix the double VT-Cast, since addon/BLizz API is returning weird values
@@ -541,17 +586,17 @@ namespace PixelMagic.Rotation
                 SpellCast(POWER_INFUSION);
             if (PIStacksBox.Checked && WoW.PlayerHasBuff(VOIDFORM_AURA) && WoW.PlayerBuffStacks(VOIDFORM_AURA) >= 20)
                 SpellCast(POWER_INFUSION);
-            if (PIWaitBox.Checked && WoW.IsSpellOnCooldown(SHADOW_FIEND) && WoW.SpellCooldownTimeRemaining(SHADOW_FIEND) > int.Parse(PIWaitText.Text))
+            if (PIWaitBox.Checked && WoW.IsSpellOnCooldown(SHADOW_FIEND) && WoW.SpellCooldownTimeRemaining(SHADOW_FIEND) > txtPIWait)
                 SpellCast(POWER_INFUSION);
             if (SFPIBox.Checked && (WoW.PlayerBuffTimeRemaining(POWER_INFUSION_AURA) == 12 || CheckBloodlust() == 12))
                 SpellCast(SHADOW_FIEND);
-            if (SFWaitBox.Checked && WoW.IsSpellOnCooldown(POWER_INFUSION) && WoW.SpellCooldownTimeRemaining(POWER_INFUSION) > int.Parse(SFWaitText.Text))
+            if (SFWaitBox.Checked && WoW.IsSpellOnCooldown(POWER_INFUSION) && WoW.SpellCooldownTimeRemaining(POWER_INFUSION) > txtSFWait)
                 SpellCast(SHADOW_FIEND);
             if (!MoveCheck() && VoidTorrentRadio1.Checked && DotsUp() && VoidTorrentBox.Checked && WoW.IsSpellOnCooldown(MIND_BLAST) && WoW.IsSpellOnCooldown(VOID_BOLT))
                 SpellCast(VOID_TORRENT);
-            if (WoW.HealthPercent < int.Parse(VEText.Text) && !WoW.IsSpellOnCooldown(VAMPIRIC_EMBRACE))
+            if (WoW.HealthPercent < txtVE && !WoW.IsSpellOnCooldown(VAMPIRIC_EMBRACE))
             {
-                Log.Write("Health below " + VEText.Text + "% - Using Vampiric Embrace now", Color.Red);
+                Log.Write("Health below " + txtVE + "% - Using Vampiric Embrace now", Color.Red);
                 SpellCast(VAMPIRIC_EMBRACE);
                 return;
             }
